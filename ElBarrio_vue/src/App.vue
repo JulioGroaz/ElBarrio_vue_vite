@@ -15,15 +15,29 @@ export default {
 </script>
 
 <template>
-  <div>
-    <!-- Usa il componente Header -->
+  <header>
+     <!-- Usa il componente Header -->
     <Header />
-
     <!-- Usa router-view per rendere le pagine dinamicamente -->
-    <router-view></router-view>
-  </div>
+    
+  </header>
+   
+  <main>
+    <div class="container-background">
+      <router-view></router-view>
+    </div>
+  </main>
 </template>
 
 <style lang="scss">
 @use '../node_modules/bootstrap/scss/bootstrap.scss'; // Usa Bootstrap per gli stili
+
+main{
+  height: 100vh; 
+  padding-top: 75px; 
+  overflow-y: auto; 
+}
+.container-background{
+  height: 100%;
+}
 </style>
