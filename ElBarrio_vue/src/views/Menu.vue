@@ -5,26 +5,36 @@
       <ul>
         <!-- Pulsante per mostrare tutti i prodotti -->
         <li @click="filterByCategory('all')" :tabindex="0" :class="{'active-category': selectedCategory === 'all'}">
-          Tutti i prodotti
+          <i class="fa-solid fa-box-open"></i>
+          <span class="category-text">Tutti i prodotti</span>
         </li>
 
-        <!-- Elenco delle categorie principali -->
+        <!-- Elenco delle categorie principali con icone -->
         <li v-for="category in categories" 
             :key="category.id"
             @click="category.name === 'vini' ? toggleViniDropdown() : filterByCategory(category.name)"
             :tabindex="0"
             :class="{'active-category': selectedCategory === category.name}">
-          <span>{{ category.name }}</span>
-          
+          <i :class="getCategoryIcon(category.name)"></i>
+          <span class="category-text">{{ category.name }}</span>
+
           <!-- Aggiungi un'icona dropdown solo per "Vini" -->
           <i v-if="category.name === 'vini'" class="fa" :class="viniDropdownOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
           
           <!-- Mostra le sottocategorie dei vini solo se "Vini" è selezionato -->
           <ul v-if="viniDropdownOpen && category.name === 'vini'" class="wine-subcategories">
-            <li @click="filterByCategory('vini_rossi')" :tabindex="0" :class="{'active-category': selectedCategory === 'vini_rossi'}">Vini Rossi</li>
-            <li @click="filterByCategory('vini_bianchi')" :tabindex="0" :class="{'active-category': selectedCategory === 'vini_bianchi'}">Vini Bianchi</li>
-            <li @click="filterByCategory('vini_rose')" :tabindex="0" :class="{'active-category': selectedCategory === 'vini_rose'}">Vini Rosé</li>
-            <li @click="filterByCategory('vini_bollicine')" :tabindex="0" :class="{'active-category': selectedCategory === 'vini_bollicine'}">Vini Bollicine</li>
+            <li @click="filterByCategory('vini_rossi')" :tabindex="0" :class="{'active-category': selectedCategory === 'vini_rossi'}">
+              <i class="fa-solid fa-wine-glass" style="color: #800f2f;"></i> <span class="wine-category-text">Vini Rossi</span>
+            </li>
+            <li @click="filterByCategory('vini_bianchi')" :tabindex="0" :class="{'active-category': selectedCategory === 'vini_bianchi'}">
+              <i class="fa-solid fa-wine-glass" style="color: #fdf8e1;"></i> <span class="wine-category-text">Vini Bianchi</span>
+            </li>
+            <li @click="filterByCategory('vini_rose')" :tabindex="0" :class="{'active-category': selectedCategory === 'vini_rose'}">
+              <i class="fa-solid fa-wine-glass" style="color: #ff8fa3;"></i> <span class="wine-category-text">Vini Rosé</span>
+            </li>
+            <li @click="filterByCategory('vini_bollicine')" :tabindex="0" :class="{'active-category': selectedCategory === 'vini_bollicine'}">
+              <i class="fa-solid fa-wine-bottle"></i> <span class="wine-category-text">Vini Bollicine</span>
+            </li>
           </ul>
         </li>
       </ul>
@@ -133,6 +143,30 @@ export default {
           console.error('Errore durante il fetch delle categorie:', error);
         });
     },
+
+    // Funzione per associare icone alle categorie
+    getCategoryIcon(categoryName) {
+      switch (categoryName) {
+        case 'birre':
+          return 'fa-solid fa-beer-mug-empty';
+        case 'caffetteria':
+          return 'fa-solid fa-mug-saucer';
+        case 'cocktail':
+          return 'fa-solid fa-martini-glass-citrus';
+        case 'superalcolici':
+          return 'fa-solid fa-martini-glass';
+        case 'food':
+          return 'fa-solid fa-burger';
+        case 'analcolici':
+          return 'fa-solid fa-bottle-water';
+        case 'vini':
+          return 'fa-solid fa-champagne-glasses'; 
+        case 'aperitivi':
+          return 'bi bi-cup-straw aperitivi-icon';
+        default:
+          return 'fa-solid fa-box-open'; // Icona predefinita
+      }
+    },
   },
 
   // Quando il componente è montato, recupera i menu e le categorie
@@ -144,12 +178,29 @@ export default {
 </script>
 
 <style scoped>
+
+/*grandezza icona aperitivi */
+.aperitivi-icon {
+  font-size: 21px;
+}
+
+/* L'ultimo li di ogni ul non ha margin-bottom */
+ul li:last-child {
+  margin-bottom: 0;
+}
+
+/* Il primo li della categoria wine-subcategories ha margin-top */
+.wine-subcategories li:first-child {
+  margin-top: 10px; 
+}
+
+
 /* Wrapper per la pagina */
 .page-wrapper {
   display: flex;
   height: 100vh;
   width: 100vw;
-  overflow: hidden; /* Previene overflow e spazi bianchi */
+  overflow: hidden;
 }
 
 /* Sidebar fissa */
@@ -158,42 +209,140 @@ export default {
   background-color: black;
   color: white;
   position: fixed;
-  top: 70px; /* Posiziona sotto l'header */
-  height: calc(100vh - 70px); /* Altezza calcolata per evitare sovrapposizione con l'header */
+  top: 70px;
+  height: calc(100vh - 70px);
   padding: 20px;
   box-sizing: border-box;
 }
 
 .sidebar ul {
   list-style: none;
-  padding: 0;
+  padding-left: 10px;
+  height: 100%;
+  align-content: center;
 }
 
 .sidebar li {
   margin-bottom: 15px;
   cursor: pointer;
   color: white;
-  transition: color 0.3s ease; /* Transizione morbida per il colore */
+  transition: color 0.3s ease;
   outline: none;
+  display: flex;
+  align-items: center;
 }
 
-/* Focus sugli elementi di lista */
+.sidebar li i {
+  margin-right: 10px;
+}
+
+/* Hover e focus sugli elementi di lista */
 .sidebar li:focus, .sidebar li:hover {
-  color: #d80630; /* Colore rosso al focus e hover */
-  border-left: 4px solid #d80630; /* Aggiungi una linea rossa a sinistra al focus/hover */
-  padding-left: 16px; /* Compensa la larghezza del bordo */
+  color: #d80630;
+  border-left: 4px solid #d80630;
+  padding-left: 16px;
 }
 
+/* Stili per le sottocategorie (es. vini) */
 .wine-subcategories li {
+  display: flex;
+  align-items: center;
   margin-bottom: 10px;
-  padding-left: 20px; /* Aggiungi spazio a sinistra per le sottocategorie */
+  padding-left: 0px;
 }
 
-/* Contenuto principale */
+.wine-category-text {
+  margin-left: 10px;
+}
+
+/* *** Stili per mobile *** */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 60px;
+    top: 50px;
+    height: calc(100vh - 50px);
+    padding: 0;
+  }
+
+  .sidebar li {
+    display: block;
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  .sidebar li i {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .sidebar li .category-text,
+  .wine-category-text {
+    display: none; /* Nascondi il testo delle categorie e delle sottocategorie su mobile */
+  }
+
+  .main-content {
+    margin-left: 80px;
+  }
+
+  /* Stili specifici per le sottocategorie in mobile */
+  .wine-subcategories li {
+    padding-left: 0 !important; /* Rimuovi padding a sinistra per allineare con l'icona principale */
+  }
+  ul.wine-subcategories{
+    padding-left: 0;
+  }
+  .wine-subcategories li:hover, .wine-subcategories li.active-category {
+    padding-left: 0 !important; /* Mantieni allineate le sottocategorie anche quando selezionate o hover */
+  }
+}
+
+/* Layout per tablet: visualizzazione in coppie */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container_cards {
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  .card-item {
+    flex: 1 1 calc(50% - 20px);
+    max-width: calc(50% - 20px);
+  }
+}
+
+/* Layout per desktop: visualizzazione originale */
+@media (min-width: 1025px) {
+  .container_cards {
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+  }
+
+  .card-item {
+    flex: 1 1 calc(25% - 20px);
+    max-width: calc(25% - 20px);
+  }
+}
+
+/* Sfondo per il main */
+.container-background {
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  padding-top: 70px;
+  box-sizing: border-box;
+}
+
+/* Assicurati che i contenuti non vadano sotto l'header */
 .main-content {
-  margin-left: 250px; /* Stessa larghezza della sidebar */
-  width: calc(100vw - 250px); /* Sottrai la larghezza della sidebar */
-  min-height: calc(100vh - 70px); /* Usa min-height per garantire che il contenuto copra sempre tutto lo schermo */
+  margin-left: 250px;
+  width: calc(100vw - 250px);
+  min-height: calc(100vh - 70px);
+  padding-top: 70px;
   padding: 0;
   box-sizing: border-box;
   overflow-y: auto;
@@ -201,21 +350,31 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  background-attachment: fixed; /* L'immagine di sfondo rimane fissa */
+  background-attachment: fixed;
 }
 
-.container-background {
-  background-color: rgba(0, 0, 0, 0.7); /* Sfondo opaco solo per il main */
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  color: white; /* Colore del testo bianco */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 60px;
+    width: calc(100vw - 60px);
+  }
+
+  .container-background {
+    padding-top: 70px;
+    min-height: 100vh;
+  }
+  .sidebar li:focus, .sidebar li:hover {
+    padding-left: 0;
+  }
 }
 
-/* Mantieni invariato lo stile delle card e del contenuto */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .main-content {
+    margin-left: 200px;
+    width: calc(100vw - 200px);
+  }
+}
+
 .container_cards {
   display: flex;
   flex-wrap: wrap;
@@ -228,10 +387,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   align-items: stretch;
-  flex: 1 1 calc(25% - 20px); /* 25% per ciascuna card meno il gap */
   box-sizing: border-box;
-  max-width: calc(25% - 20px); /* Imposta la larghezza massima per avere 4 card per riga */
-  min-height: 300px; /* Imposta un'altezza minima comune per tutte le card */
   padding: 10px;
 }
 
@@ -268,4 +424,5 @@ export default {
   font-size: 1rem;
   margin: 5px 0;
 }
+
 </style>

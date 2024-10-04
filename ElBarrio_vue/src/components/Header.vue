@@ -37,7 +37,7 @@
   <style scoped>
   /* Stile per il logo */
   .logo {
-    height: 50px;
+    height: 45px;
     width: auto;
   }
   
@@ -47,14 +47,31 @@
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000; /* Assicura che l'header sia sopra altri elementi */
-    background-color: #FA7070; /* Colore di sfondo come richiesto */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Aggiunge un'ombra per l'evidenziazione */
+    z-index: 1000;
+    background-color: #FA7070;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 10px 0; /* Riduce l'altezza dell'header */
+  }
+  
+  /* Regola l'altezza dell'header e la dimensione del logo per dispositivi mobili */
+  @media (max-width: 768px) {
+    .logo {
+      height: 35px; /* Logo più piccolo per mobile */
+    }
+  
+    .navbar-toggler {
+      padding: 4px 6px; /* Riduci la dimensione del pulsante del burger menu */
+    }
+  
+    .fixed-header {
+      padding: 3px 0; /* Riduci leggermente il padding dell'header per dispositivi mobili */
+    }
   }
   
   /* Aggiungi un margine al contenuto per evitare sovrapposizioni con l'header */
   body, html {
-    padding-top: 70px; /* Altezza dell'header */
+    padding-top: 60px; /* Altezza ridotta dell'header */
   }
+  
   </style>
   

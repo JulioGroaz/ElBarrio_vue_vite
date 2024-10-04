@@ -37,7 +37,11 @@ main{
   padding-top: 75px; 
   overflow-y: auto; 
 }
-.container-background{
-  height: 100%;
+@media (max-width: 768px){
+  main{
+    height: 100vh; 
+  padding-top: 42px; 
+  overflow-y: auto;
+  }
 }
 </style>
