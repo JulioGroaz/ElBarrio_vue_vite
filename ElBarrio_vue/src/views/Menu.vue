@@ -87,8 +87,14 @@ export default {
   methods: {
     // Metodo per ottenere il percorso completo delle immagini
     getImagePath(imagePath) {
-      return `http://localhost:8001/storage/${imagePath}`;
-    },
+    if (imagePath.startsWith('http')) {
+        // Se il percorso già contiene un URL completo, restituiscilo così com'è
+        return imagePath;
+    }
+    // Altrimenti, aggiungi il prefisso per l'URL pubblico
+    return `http://localhost:8001/storage/${imagePath}`;
+},
+
 
     // Formattazione del prezzo
     formatPrice(price) {
