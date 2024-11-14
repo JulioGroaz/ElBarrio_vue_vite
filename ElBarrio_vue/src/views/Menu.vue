@@ -1,4 +1,15 @@
 <template>
+  <div>
+    <!-- Mostra il loader quando i dati sono in caricamento -->
+    <div v-if="isLoading" class="loader-container">
+      <span class="loader"></span>
+    </div>
+
+    <!-- Mostra il contenuto quando il caricamento è terminato -->
+    <div v-else>
+      <!-- Qui va il contenuto normale -->
+    </div>
+  </div>
   <div class="page-wrapper">
     <!-- Sidebar fissa per il filtraggio -->
     <aside class="sidebar">
@@ -54,7 +65,7 @@
               <div class="card-image-menu">
                 <img
                   :src="getImagePath(menu.image_path)"
-                  class="img-fluid rounded-start card-image-menu"
+                  class="img-fluid card-image-menu"
                   :alt="menu.name"
                 />
               </div>
@@ -78,6 +89,7 @@ export default {
   name: 'Menu',
   data() {
     return {
+      isLoading: true, // Stato che controlla se il caricamento è in corso
       menus: [], // Elenco completo dei menu
       categories: [], // Elenco delle categorie principali
       selectedCategory: 'all', // Categoria selezionata, default 'all'
@@ -87,14 +99,18 @@ export default {
   methods: {
     // Metodo per ottenere il percorso completo delle immagini
     getImagePath(imagePath) {
-    if (imagePath.startsWith('http')) {
-        // Se il percorso già contiene un URL completo, restituiscilo così com'è
-        return imagePath;
-    }
-    // Altrimenti, aggiungi il prefisso per l'URL pubblico
-    return `http://localhost:8001/storage/${imagePath}`;
-},
+      if (!imagePath) {
+        // Restituisci un'immagine di default se imagePath è null o vuoto
+        return '/images/default-image.jpg'; // Cambia con il percorso di un'immagine di default
+      }
 
+      if (imagePath.startsWith('http')) {
+        return imagePath;
+      }
+      
+      // Altrimenti, aggiungi il prefisso per l'URL pubblico
+      return `http://localhost:8001/storage/${imagePath}`;
+    },
 
     // Formattazione del prezzo
     formatPrice(price) {
@@ -132,9 +148,14 @@ export default {
         .then(response => response.json())
         .then(data => {
           this.menus = data;
+          // Ritarda la fine del caricamento di 1 secondo dopo aver ottenuto i dati
+          setTimeout(() => {
+            this.isLoading = false;
+          }, 1000);
         })
         .catch(error => {
           console.error('Errore durante il fetch del menu:', error);
+          this.isLoading = false; // Disabilita comunque il caricamento in caso di errore
         });
     },
 
@@ -212,8 +233,8 @@ ul li:last-child {
 /* Sidebar fissa */
 .sidebar {
   width: 250px;
-  background-color: black;
-  color: white;
+  background-color: #2c2e3a;
+  color: #d9d9d9;
   position: fixed;
   top: 70px;
   height: calc(100vh - 70px);
@@ -339,7 +360,7 @@ ul li:last-child {
   justify-content: center;
   align-items: center;
   color: white;
-  padding-top: 70px;
+  padding-top: 15px;
   box-sizing: border-box;
 }
 
@@ -366,18 +387,27 @@ ul li:last-child {
   }
 
   .container-background {
-    padding-top: 70px;
     min-height: 100vh;
   }
   .sidebar li:focus, .sidebar li:hover {
     padding-left: 0;
   }
+  .container_cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+  flex-direction: column;
+}
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
   .main-content {
     margin-left: 200px;
     width: calc(100vw - 200px);
+  }
+  .sidebar{
+    width: 200px;
   }
 }
 
@@ -407,9 +437,11 @@ ul li:last-child {
 
 .card-image-menu {
   border-radius: 50%;
-  background-color: black;
+  background-color: #2c2e3a;
   height: 150px;
   width: 150px;
+  object-fit: cover;
+  object-position: center;
 }
 
 .card-description {
@@ -431,4 +463,56 @@ ul li:last-child {
   margin: 5px 0;
 }
 
+
+/* Contenitore del loader, che copre l'intera pagina e ha sfondo bianco */
+.loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(26, 26, 26); /* Sfondo bianco */
+  z-index: 1000; /* Mantieni il loader visibile sopra tutto */
+}
+
+
+/* Stile del loader */
+.loader {
+  width: 40px;
+  height: 98px;
+  display: inline-block;
+  border: 2px solid white; /* Cambia il bordo del loader in bianco */
+  border-radius: 20px 20px 4px 4px;
+  background: white; /* Colore del loader bianco */
+  position: relative; /* Necessario per posizionare l'elemento after correttamente */
+  animation: fill 1.5s linear infinite alternate;
+}
+
+.loader::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: -35px; /* Allinea il collo sopra il loader */
+  transform: translateX(-50%);
+  border: 2px solid white; /* Bordo bianco */
+  border-bottom: none;
+  background: white; /* Colore bianco */
+  width: 15px;
+  height: 35px;
+  border-radius: 10px 10px 0 0; /* Arrotonda gli angoli del collo */
+  animation: fillNeck 1.5s linear infinite alternate;
+}
+
+@keyframes fill {
+  0% { box-shadow: 0 0 inset; }
+  50%, 100% { box-shadow: 0 -98px inset red; } /* Colore del contenuto rosso */
+}
+
+@keyframes fillNeck {
+  0%, 50% { box-shadow: 0 0 inset; }
+  100% { box-shadow: 0 -20px inset red; } /* Colore del contenuto rosso */
+}
 </style>
