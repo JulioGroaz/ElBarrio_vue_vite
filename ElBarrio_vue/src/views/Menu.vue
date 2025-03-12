@@ -74,6 +74,7 @@
 </template>
 
 <script>
+import defaultImage from '@/style/partials/vino.jpg';
 export default {
   name: 'Menu',
   data() {
@@ -84,17 +85,18 @@ export default {
       viniDropdownOpen: false, // Variabile per gestire l'apertura del dropdown dei vini
     };
   },
+  
   methods: {
     // Metodo per ottenere il percorso completo delle immagini
     getImagePath(imagePath) {
-    if (imagePath.startsWith('http')) {
-        // Se il percorso già contiene un URL completo, restituiscilo così com'è
+      if (!imagePath || imagePath === 'null' || imagePath.trim() === '') {
+        return defaultImage; // Usa l'immagine importata
+      }
+      if (imagePath.startsWith('http')) {
         return imagePath;
-    }
-    // Altrimenti, aggiungi il prefisso per l'URL pubblico
-    return `http://localhost:8001/storage/${imagePath}`;
-},
-
+      }
+      return `http://localhost:8001/storage/${imagePath}`;
+    },
 
     // Formattazione del prezzo
     formatPrice(price) {
@@ -385,7 +387,7 @@ ul li:last-child {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .card-item {
@@ -406,7 +408,7 @@ ul li:last-child {
 }
 
 .card-image-menu {
-  border-radius: 50%;
+  border-radius: 50% !important;
   background-color: black;
   height: 150px;
   width: 150px;
