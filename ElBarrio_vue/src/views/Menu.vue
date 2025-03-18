@@ -125,7 +125,7 @@ export default {
 
     // Chiamata API per ottenere i menu, eventualmente filtrati per categoria
     fetchMenus(category = null) {
-      let url = 'http://localhost:8001/api/menu';
+      let url = 'http://localhost:8000/api/menu';
       if (category && category !== 'all') {
         url += `?category=${category}`;
       }
@@ -142,7 +142,7 @@ export default {
 
     // Chiamata API per ottenere le categorie
     fetchCategories() {
-      fetch('http://localhost:8001/api/categories')
+      fetch('http://localhost:8000/api/categories')
         .then(response => response.json())
         .then(data => {
           this.categories = data;

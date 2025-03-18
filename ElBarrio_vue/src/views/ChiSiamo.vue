@@ -38,7 +38,7 @@ export default {
   methods: {
     // Metodo per recuperare i dati dall'API
     fetchChiSiamo() {
-      fetch("http://localhost:8001/api/chi-siamo") // Sostituisci con l'endpoint API corretto
+      fetch("http://localhost:8000/api/chi-siamo") // Sostituisci con l'endpoint API corretto
         .then((response) => response.json())
         .then((data) => {
           this.chisiamo = data;
